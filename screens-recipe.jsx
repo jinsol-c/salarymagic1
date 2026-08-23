@@ -8,100 +8,116 @@ const RC_TABS = [
 ];
 
 const RC_LOAN = [
-  ['보증서로 대출받기','카카오뱅크 개인사업자 보증서 대출','1.82%','최저 1개월'],
-  ['개인사업자대출 갈아타기','케이뱅크 개인사업자 신용대출','연 5.27 ~ 11.5%','최대 10개월'],
-  ['개인사업자 부동산 담보 대출','카카오뱅크 개인사업자 부동산담보대출','연 5.27 ~ 8.9%','최대 12개월'],
+  ['보증서로 대출 받기','카카오뱅크 개인사업자 보증서 대출','1.82%','최대 1억원',['S','#1D4ED8','#fff']],
+  ['개인사업자 대출 갈아타기','케이뱅크 개인사업자 신용대출','연 5.27 ~ 11.5%','최대 10억원',['Kbank','#101C4B','#fff']],
+  ['개인사업자 부동산 담보 대출','카카오뱅크 개인사업자 부동산담보대출','연 5.27 ~ 8.9%','최대 1.2억원',['K','#FFDC00','#3B2C00']],
 ];
 const RC_INVEST = [
-  ['차곡차곡 돈 굴리기','카카오뱅크 자유적금','+0.181%','12개월 후'],
-  ['미래성장기업에 안정투자','NH-Amundi전략적장기성장기업투자신탁(주식)','+18.54%','6개월 후'],
-  ['가벼이 시작 꾸준한 수익추구','마이스노우TIGER 200증권상장지수투자신탁(주식)C-e','+5.68%','6개월 후'],
+  ['차곡차곡 돈 굴리기','카카오뱅크 개인사업자 통장','+ 0.18%','12개월 후',['1','#7FE0A8','#0B6B3A']],
+  ['미래성장기업에 안정 더하기','NH-Amundi성장주도코리아130증권투자신탁(채권…','+18.54%','6개월 후',['5','#F26A6A','#fff']],
+  ['거북이처럼 꾸준한 수익추구','마이다스거북이90증권투자신탁1호(주식)Ce','+5.68%','6개월 후',['3','#FFB44D','#5A3400']],
 ];
 const RC_INSURE = [
-  ['매출 실수도 보상받아요!','유배당 자영업자 전용 보험'],
-  ['배달에 문제가 생겼을 때','KB 개인사업자 배상책임 특약'],
-  ['오토바이 운전자도 간편 가입','DB손해보험 다이렉트 라이더 보험'],
+  ['배송 실수도 보상 받아요!','온라인 자영업자 전용 보험',null,null,['S','#1D4ED8','#fff']],
+  ['매장에 문제가 생겼을 때','KB 개인사업자 사업장 화재 보험',null,null,['KB','#FFD400','#3B2C00']],
+  ['오토바이 운전자도 간편 가입','DB손해보험 다이렉트 라이더+보험',null,null,['N','#00C36A','#fff']],
 ];
 const RC_CARD = [
-  ['통신비 최대 50%할인 받아요!','KB국민 Youth Club 체크카드'],
-  ['관리비 최대 10% 아끼는 비법','LOCA 365'],
-  ['주유비 최대 3만원 할인 받아요!','신한카드 Mr.Life'],
+  ['통신비 최대 50%할인 받아요!','KB국민 Youth Club 체크카드',null,null,['S','#1D4ED8','#fff']],
+  ['관리비 최대 10% 아끼는 비법','LOCA 365',null,null,['LOCA','#111111','#fff']],
+  ['주유비 최대 3만원 할인 받아요!','신한카드 Mr.Life',null,null,['S','#1D4ED8','#fff']],
 ];
 
+const RcTile = ({t}) => (
+  <span style={{width:44,height:44,borderRadius:10,flex:'none',display:'grid',placeItems:'center',
+    background:t?t[1]:'#F0F0F0',color:t?t[2]:'#9E9E9E',fontSize:t&&t[0].length>2?11:17,fontWeight:800,letterSpacing:'-.02em'}}>{t?t[0]:''}</span>
+);
+
 function RecipeMain({onBack, go}) {
+  const scRef = React.useRef(null);
   return (
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
       <AppHeader title="머니 레시피" onBack={onBack} icons={false}/>
-      <div className="scroll" style={{marginTop:14}}>
-        <div style={{padding:'0 20px 26px',display:'grid',gap:12}}>
-          <div className="card" style={{padding:16,display:'flex',gap:8,alignItems:'center'}}>
-            <span style={{background:'#222',color:'#fff',borderRadius:12,padding:'4px 9px',fontSize:11,fontWeight:700,display:'inline-flex',gap:5,alignItems:'center'}}>
+      <div className="scroll" ref={scRef} style={{marginTop:14}}>
+        <div style={{padding:'0 20px 30px',display:'grid',gap:14}}>
+          <div className="card" style={{padding:'16px 18px',display:'flex',gap:10,alignItems:'center'}}>
+            <span style={{background:'#222',color:'#fff',borderRadius:14,padding:'5px 10px',fontSize:11,fontWeight:700,display:'inline-flex',alignItems:'center',gap:5,flex:'none'}}>
               <i style={{width:6,height:6,borderRadius:'50%',background:'#22C55E',display:'block'}}></i>안정</span>
-            <span className="b14">투자로 자산을 키워볼 타이밍입니다.</span>
+            <span className="b14" style={{fontWeight:600}}>투자로 자산을 키워볼 타이밍입니다.</span>
           </div>
 
-          <div style={{background:'#DFE4FF',borderRadius:10,padding:'20px 18px',position:'relative',overflow:'hidden'}}>
-            <span style={{position:'absolute',right:14,top:14,border:'1px solid #9E9E9E',color:'#616161',borderRadius:10,padding:'2px 6px',fontSize:10}}>AD</span>
-            <div className="h3">신한 자산운용</div>
-            <div className="h2" style={{marginTop:8}}>알아서 자라는 자산 마법!</div>
-            <div style={{background:'#fff',borderRadius:8,padding:'14px 16px',marginTop:16}}>
-              <div className="t16 blue">신한마음편한TDF</div>
-              <div className="b12" style={{marginTop:6,color:'#616161'}}>(2030, 2040, 2045) 3년 수익률 1위</div>
+          <div style={{background:'linear-gradient(180deg,#93A6F7 0%,#8095F3 100%)',borderRadius:14,padding:'22px 20px 18px',position:'relative'}}>
+            <span style={{position:'absolute',right:16,top:18,background:'#EFF2FF',color:'#5F6B8C',borderRadius:999,padding:'5px 12px',fontSize:12,fontWeight:700}}>AD</span>
+            <div className="h2" style={{color:'#fff',lineHeight:1.4}}>신한 자산운용<br/>알아서 자라는 자산 마법!</div>
+            <div style={{background:'#fff',borderRadius:12,padding:'18px 16px',marginTop:20,textAlign:'center'}}>
+              <div className="h3" style={{color:'#5F79FF'}}>신한마음편한TDF</div>
+              <div className="b14" style={{marginTop:6,color:'#9E9E9E'}}>(2035, 2040, 2045)</div>
+              <div className="b14" style={{marginTop:8}}>수탁고 500억 이상 TDF 중 <b style={{color:'#F04452'}}>3년 수익률 1위</b></div>
+              <div className="cap12" style={{marginTop:8,color:'#BDBDBD',display:'flex',gap:6,justifyContent:'center',alignItems:'center'}}>
+                <i style={{width:7,height:7,borderRadius:'50%',background:'#BDBDBD',display:'block'}}></i>신한자산운용</div>
             </div>
-            <div style={{display:'flex',gap:6,justifyContent:'center',marginTop:16}}>
-              {[0,1,2,3,4].map(i=><i key={i} style={{width:6,height:6,borderRadius:'50%',background:i===2?'#5F79FF':'#ADBAFF',display:'block'}}></i>)}
+            <div style={{display:'flex',gap:7,justifyContent:'center',marginTop:16}}>
+              {[0,1,2,3,4].map(i=><i key={i} style={{width:7,height:7,borderRadius:'50%',background:i===2?'#5F79FF':'#D9DEF6',display:'block'}}></i>)}
             </div>
           </div>
 
-          <div style={{display:'flex',gap:8}}>
+          <div style={{display:'flex',gap:10}}>
             {RC_TABS.map(([k,label,icon])=>(
-              <button key={k} onClick={()=>go('recipe_'+k)} style={{flex:1,display:'grid',placeItems:'center',gap:8,background:'#fff',border:'1px solid #E0E0E0',borderRadius:10,padding:'16px 0'}}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d={icon} stroke="#5F79FF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                <span className="l13">{label}</span>
+              <button key={k} onClick={()=>go('recipe_'+k)} style={{flex:1,display:'grid',justifyItems:'center',gap:10}}>
+                <span style={{width:'100%',aspectRatio:'1',maxWidth:70,background:'#fff',borderRadius:16,display:'grid',placeItems:'center',boxShadow:'0 2px 8px rgba(0,0,0,.05)'}}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d={icon} stroke="#5F79FF" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </span>
+                <span className="l13" style={{fontWeight:600}}>{label}</span>
               </button>
             ))}
           </div>
 
           <RcSection title="대출" onMore={()=>go('recipe_loan')} rows={RC_LOAN}/>
 
-          <button className="row" style={{width:'100%',background:'#5F79FF',borderRadius:10,padding:'18px'}} onClick={()=>go('bank')}>
+          <button className="row" style={{width:'100%',background:'#5F79FF',borderRadius:12,padding:'20px 18px'}} onClick={()=>go('bank')}>
             <span className="h4" style={{color:'#fff'}}>저금통 잔액</span>
-            <span style={{display:'flex',gap:8,alignItems:'center'}}><span className="h3" style={{color:'#fff'}}>1,235만원</span><Chevron d="right" c="#fff" s={18}/></span>
+            <span style={{display:'flex',gap:8,alignItems:'center'}}><span className="h2" style={{color:'#fff'}}>1,235만원</span><Chevron d="right" c="#fff" s={18}/></span>
           </button>
 
-          <RcSection title="투자" onMore={()=>go('recipe_invest')} rows={RC_INVEST}/>
+          <RcSection title="투자" onMore={()=>go('recipe_invest')} rows={RC_INVEST} gain/>
           <RcSection title="보험" onMore={()=>go('recipe_insure')} rows={RC_INSURE} badge="보험료 확인"/>
           <RcSection title="카드" onMore={()=>go('recipe_card')} rows={RC_CARD} badge="상품 정보"/>
         </div>
       </div>
+      <button onClick={()=>scRef.current && scRef.current.scrollTo({top:0,behavior:'smooth'})}
+        style={{position:'absolute',right:16,bottom:24,width:48,height:48,borderRadius:'50%',background:'#5F79FF',
+          display:'grid',placeItems:'center',boxShadow:'0 6px 16px rgba(95,121,255,.4)'}} aria-label="맨 위로">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 19V6m0 0-6 6m6-6 6 6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      </button>
     </div>
   );
 }
 
-function RcSection({title, rows, onMore, badge}) {
+function RcSection({title, rows, onMore, badge, gain}) {
   return (
-    <div className="card" style={{padding:16}}>
+    <div className="card" style={{padding:'18px 18px 6px'}}>
       <button className="row" style={{width:'100%'}} onClick={onMore}>
-        <span className="h3">{title}</span><Chevron d="right" c="#616161" s={20}/>
+        <span className="h3">{title}</span><Chevron d="right" c="#9E9E9E" s={20}/>
       </button>
-      <div style={{marginTop:6}}>
-        {rows.map(r=>(
-          <div className="row" key={r[0]} style={{marginTop:18}}>
-            <span style={{display:'flex',gap:10,alignItems:'center'}}>
-              <BankTile name={r[1]}/>
-              <span><span className="b14" style={{display:'block',fontWeight:600}}>{r[0]}</span>
-                <span className="cap12" style={{display:'block',marginTop:5,color:'#9E9E9E'}}>{r[1]}</span></span>
+      <div style={{height:1,background:'#EEEEEE',marginTop:16}}></div>
+      {rows.map((r,i)=>(
+        <div className="row" key={r[0]} style={{padding:'16px 0',borderBottom:i<rows.length-1?'1px solid #F0F0F0':'0',gap:10,alignItems:'center'}}>
+          <span style={{display:'flex',gap:12,alignItems:'center',flex:1,minWidth:0}}>
+            <RcTile t={r[4]}/>
+            <span style={{minWidth:0}}>
+              <span className="t16" style={{display:'block',fontSize:15}}>{r[0]}</span>
+              <span className="cap12" style={{display:'block',marginTop:5,color:'#9E9E9E',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',maxWidth:190}}>{r[1]}</span>
             </span>
-            {badge
-              ? <span style={{border:'1px solid #ADBAFF',color:'#5F79FF',borderRadius:12,padding:'5px 9px',fontSize:11,fontWeight:600,flex:'none'}}>{badge}</span>
-              : <span style={{textAlign:'right',flex:'none'}}>
-                  <span className="t16" style={{display:'block',color:r[2] && r[2][0]==='+' ? '#5F79FF':'#222'}}>{r[2]}</span>
-                  <span className="cap12" style={{display:'block',marginTop:5,color:'#9E9E9E'}}>{r[3]}</span></span>}
-          </div>
-        ))}
-      </div>
+          </span>
+          {badge
+            ? <span style={{border:'1px solid #ADBAFF',color:'#5F79FF',borderRadius:999,padding:'8px 14px',fontSize:12,fontWeight:600,flex:'none'}}>{badge}</span>
+            : <span style={{textAlign:'right',flex:'none'}}>
+                <span className="h4" style={{display:'block',color:gain?'#00B25D':'#222'}}>{r[2]}</span>
+                <span className="cap12" style={{display:'block',marginTop:5,color:'#9E9E9E'}}>{r[3]}</span></span>}
+        </div>
+      ))}
     </div>
   );
 }

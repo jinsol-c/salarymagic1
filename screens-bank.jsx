@@ -108,10 +108,10 @@ function BankMain({onTab, go}) {
             </div>
             <div className="h4" style={{marginTop:22}}>거래 내역</div>
             {EMG_TXN.map(r=><TxnRow key={r[0]} row={r}/>)}
-            <button className="btn" style={{marginTop:22}} onClick={()=>go('bank_txn')}>더보기</button>
+            <button className="btn" style={{marginTop:22}} onClick={()=>go('bank_txn_emg')}>더보기</button>
           </div>
 
-          <button className="card row" style={{width:'100%',textAlign:'left',padding:16}}>
+          <button className="card row" style={{width:'100%',textAlign:'left',padding:16}} onClick={()=>go&&go('recipe')}>
             <span style={{display:'flex',gap:12,alignItems:'center'}}>
               <img src="assets/lupang-peek.png" alt="" style={{width:44}}/>
               <span><span className="h4" style={{display:'block'}}>비상금, 더 크게 키우기!</span>
@@ -145,7 +145,7 @@ function BankMain({onTab, go}) {
             </GreenNote>
             <div className="h4" style={{marginTop:22}}>입출금 내역</div>
             {TAX_TXN.map(r=><TxnRow key={r[0]} row={r}/>)}
-            <button className="btn" style={{marginTop:22}} onClick={()=>go('bank_txn')}>더보기</button>
+            <button className="btn" style={{marginTop:22}} onClick={()=>go('bank_txn_tax')}>더보기</button>
           </div>
         </div>
       </div>
@@ -155,7 +155,7 @@ function BankMain({onTab, go}) {
 }
 
 // ── 저금통 거래내역 (풀 팝업)
-function BankTxn({back}) {
+function BankTxn({back, title}) {
   const [period, setPeriod] = uS('1개월');
   const [cal, setCal] = uS(false);
   const [range, setRange] = uS(null);
@@ -165,7 +165,7 @@ function BankTxn({back}) {
       <StatusBar/>
       <div className="sb-pad"></div>
       <div className="row" style={{padding:'4px 20px 0',flex:'none'}}>
-        <span className="h3">저금통 거래내역</span>
+        <span className="h3">{title || '저금통 거래내역'}</span>
         <button onClick={back} aria-label="닫기">
           <svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#222" strokeWidth="1.8" strokeLinecap="round"/></svg>
         </button>
@@ -233,7 +233,13 @@ function BankBox({back}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <div style={{display:'flex',flex:'none',padding:'8px 20px 0'}}>
+      <div className="row" style={{padding:'4px 20px 0',flex:'none'}}>
+        <span className="h3">상자 설정</span>
+        <button onClick={back} aria-label="닫기">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#222" strokeWidth="1.8" strokeLinecap="round"/></svg>
+        </button>
+      </div>
+      <div style={{display:'flex',flex:'none',padding:'16px 20px 0'}}>
         {['비상금 상자','세금 상자'].map(t=>(
           <button key={t} onClick={()=>setTab(t)} style={{flex:1,paddingBottom:12,fontSize:15,fontWeight:tab===t?700:400,
             color:tab===t?'#5F79FF':'#9E9E9E',borderBottom:'2px solid '+(tab===t?'#5F79FF':'#EEEEEE')}}>{t}</button>

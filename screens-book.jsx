@@ -446,7 +446,7 @@ function BookDetail({label, onBack}) {
   );
 }
 
-function BookScreen({onTab, onDetail, go}) {
+function BookScreen({onTab, onDetail, go, back}) {
   const [tab, setTab] = uS('AI 리포트');
   const [mo, setMo] = uS(0), [wk, setWk] = uS(0), [yr, setYr] = uS(0);
   const monthLabel = n => { const t = 2026*12 + 6 + n; return `${Math.floor(t/12)}년 ${t%12+1}월`; };
@@ -460,7 +460,7 @@ function BookScreen({onTab, onDetail, go}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <BookHeader title="장부"/>
+      <BookHeader title="분석 리포트" onBack={back}/>
       <BookTabs tab={tab} setTab={setTab}/>
       <div className="scroll">
         <Period label={per.label} next={per.v < 0} onPrev={()=>per.set(per.v-1)} onNext={()=>per.set(per.v+1)}/>

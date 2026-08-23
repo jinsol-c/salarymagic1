@@ -8,9 +8,9 @@ const OB_ROUTES = [
   ['ob_coach1','11 코치마크 · 계좌 연동'], ['ob_coach2','12 코치마크 · 비상금 상자'],
   ['ob_salary','13 월급 설정 · 계좌 선택'], ['ob_done','14 월급 설정 완료'],
 ];
-const APP_ROUTES = [['home','01 메인 홈'],['book','02 장부'],['book_detail','02-1 장부 · 카테고리 상세'],
+const APP_ROUTES = [['home','01 메인 홈'],['book','02 장부'],['book_in','02-1 수입 상세내역'],['book_out','02-2 지출 상세내역'],['book_report','02-3 분석 리포트'],['book_detail','02-4 장부 · 카테고리 상세'],
   ['salary_main','03 월급 메인'],['salary_setting','03-1 월급 설정 변경'],['salary_payout','03-2 월급 지급 받기'],['salary_risk','03-3 월급 지급 · RISK'],['salary_history','03-4 월급 수령 이력'],['plan','03-5 요금제'],
-  ['bank','04 저금통 메인'],['bank_txn','04-1 저금통 거래내역'],['bank_box','04-2 상자 설정'],
+  ['bank','04 저금통 메인'],['bank_txn_emg','04-1 비상금 상자 거래내역'],['bank_txn_tax','04-2 세금 상자 거래내역'],['bank_box','04-2 상자 설정'],
   ['recipe','05 머니 레시핌'],['recipe_loan','05-1 대출'],['recipe_invest','05-2 투자'],['recipe_insure','05-3 보험'],['recipe_card','05-4 카드'],
   ['lock','06 잠금화면 알림']];
 let PLAN_FROM = 'salary_main';
@@ -63,7 +63,10 @@ function App() {
       case 'ob_salary': return <ObSalarySet {...p}/>;
       case 'ob_done': return <ObSalaryDone {...p}/>;
       case 'home': return <HomeScreen s={s} onTab={tabNav} onMenu={()=>setMenu(true)} go={nav}/>;
-      case 'book': return <BookScreen onTab={tabNav} go={nav} onDetail={l=>{setCat(l); nav('book_detail');}}/>;
+      case 'book': return <BookMain onTab={tabNav} go={nav}/>;
+      case 'book_in': return <BookTxnList kind="in" back={()=>nav('book',-1)}/>;
+      case 'book_out': return <BookTxnList kind="out" back={()=>nav('book',-1)}/>;
+      case 'book_report': return <BookScreen onTab={tabNav} go={nav} back={()=>nav('book',-1)} onDetail={l=>{setCat(l); nav('book_detail');}}/>;
       case 'book_detail': return <BookDetail label={cat} onBack={()=>nav('book',-1)}/>;
       case 'salary_main': return <SalaryMain s={s} onTab={tabNav} go={nav}/>;
       case 'salary_setting': return <SalarySetting s={s} set={set} back={()=>nav('salary_main',-1)}/>;
@@ -73,6 +76,8 @@ function App() {
       case 'plan': return <PlanScreen back={()=>nav(PLAN_FROM,-1)}/>;
       case 'bank': return <BankMain onTab={tabNav} go={nav}/>;
       case 'bank_txn': return <BankTxn back={()=>nav('bank',-1)}/>;
+      case 'bank_txn_emg': return <BankTxn title="비상금 상자 거래내역" back={()=>nav('bank',-1)}/>;
+      case 'bank_txn_tax': return <BankTxn title="세금 상자 거래내역" back={()=>nav('bank',-1)}/>;
       case 'bank_box': return <BankBox back={()=>nav('bank',-1)}/>;
       case 'recipe': return <RecipeMain onBack={()=>nav('home',-1)} go={nav}/>;
       case 'recipe_loan': return <RecipeDetail kind="loan" back={()=>nav('recipe',-1)}/>;

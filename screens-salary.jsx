@@ -232,6 +232,7 @@ function SalaryPayout({s, back, risk}) {
   const [amt, setAmt] = uS('');
   const [modal, setModal] = uS(null);
   const avail = risk ? 0 : 1800000;
+  const over = Number(amt) > avail;
   return (
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
@@ -257,12 +258,13 @@ function SalaryPayout({s, back, risk}) {
             </div>
             <div style={{marginTop:14}}><GradBar pct={risk?3:82} danger={risk}/></div>
             <div className="l13" style={{marginTop:20,color:'#616161'}}>수령 금액</div>
-            <div className="row" style={{marginTop:8,border:'1px solid #E0E0E0',borderRadius:8,padding:'0 14px',height:48}}>
+            <div className="row" style={{marginTop:8,border:'1px solid '+(over?'#F04452':'#E0E0E0'),borderRadius:8,padding:'0 14px',height:48,transition:'border-color .18s'}}>
               <input value={amt?won(Number(amt)):''} placeholder="금액을 입력하세요" inputMode="numeric"
                 onChange={e=>setAmt(e.target.value.replace(/[^0-9]/g,''))}
                 style={{flex:1,border:0,outline:'none',background:'transparent',fontSize:15}}/>
               <span className="b14" style={{color:'#616161'}}>원</span>
             </div>
+            {over && <p className="b12" style={{margin:'10px 0 0',color:'#F04452',fontWeight:600}}>가용 금액({won(avail)}원)을 초과했어요. 다시 확인해 주세요.</p>}
           </div>
 
           {risk ? (
@@ -277,7 +279,7 @@ function SalaryPayout({s, back, risk}) {
               </div>
             </>
           ) : (
-            <button className="btn" style={{marginTop:18}} onClick={()=>setModal(Number(amt)>avail?'fail':'ok')}>월급 받기</button>
+            <button className="btn" style={{marginTop:18}} onClick={()=>setModal(over?'fail':'ok')}>월급 받기</button>
           )}
 
           <div style={{marginTop:26}}>

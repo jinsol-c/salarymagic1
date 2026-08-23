@@ -142,7 +142,10 @@ function ObIndustry({s, set, go, back}) {
 
 // ───────── 4. 예상 필요 매출
 function ObRevenue({s, go, back}) {
-  const need = (s.want||3000000) + OPEX + TAXRES + EMERG;
+  const want = s.want || 3000000;
+  const COST_RATE = 0.647; // 매출 대비 사업비·세금 비율 (업종 평균)
+  const need = Math.round(want / (1 - COST_RATE) / 100000) * 100000;
+  const cost = need - want;
   return (
     <Screen progress={44} onBack={back} foot={<button className="btn" onClick={go}>지금 내 월급 계산하기</button>}>
       <div className="body-pad" style={{paddingTop:8}}>
@@ -151,14 +154,14 @@ function ObRevenue({s, go, back}) {
         <div className="card tint" style={{marginTop:24}}>
           <div className="l14" style={{color:'#616161'}}>예상 필요 매출</div>
           <div style={{marginTop:10,display:'flex',alignItems:'baseline',gap:4}}>
-            <span className="d2 blue">약 {man(Math.round(need/100000)*100000)}만원</span>
+            <span className="d2 blue">약 {man(need)}만원</span>
             <span className="l14" style={{color:'#616161'}}>/월</span>
           </div>
         </div>
         <div className="card" style={{marginTop:12}}>
-          <div className="row"><span className="b14" style={{color:'#616161'}}>희망 월급</span><span className="h4">{man(s.want||3000000)}만원</span></div>
+          <div className="row"><span className="b14" style={{color:'#616161'}}>희망 월급</span><span className="h4">{man(want)}만원</span></div>
           <div className="rowsep"></div>
-          <div className="row"><span className="b14" style={{color:'#616161'}}>예상 사업비 · 세금</span><span className="h4">{man(OPEX+TAXRES+EMERG)}만원</span></div>
+          <div className="row"><span className="b14" style={{color:'#616161'}}>예상 사업비 · 세금</span><span className="h4">{man(cost)}만원</span></div>
         </div>
         <p className="cap12" style={{marginTop:14,lineHeight:1.6,color:'#9E9E9E'}}>중소벤처기업부 「소상공인실태조사」의 업종별 매출·영업비용·영업이익과 국세청 경비율을 참고해 예상 매출을 계산했어요.</p>
       </div>
