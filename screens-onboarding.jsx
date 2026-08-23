@@ -141,10 +141,21 @@ function ObIndustry({s, set, go, back}) {
 }
 
 // ───────── 4. 예상 필요 매출
+// 매출 대비 사업비·세금 비율
+// 기본 87.4% = 2023년 소상공인실태조사(중기부) 기업체당 연매출 1억 9,900만원 / 영업이익 2,500만원
+// 음식점 89.7% = 국세청 단순경비율(한식 일반음식점, 업종코드 552101)
+const COST_RATES = {food:0.897, cafe:0.874, beauty:0.874, retail:0.874};
+const COST_SRC = {
+  food:'국세청 단순경비율(한식 일반음식점 552101) 89.7% 적용',
+  cafe:'소상공인실태조사 전체 평균 영업비용률 87.4% 적용',
+  beauty:'소상공인실태조사 전체 평균 영업비용률 87.4% 적용',
+  retail:'소상공인실태조사 전체 평균 영업비용률 87.4% 적용',
+};
+
 function ObRevenue({s, go, back}) {
   const want = s.want || 3000000;
-  const COST_RATE = 0.647; // 매출 대비 사업비·세금 비율 (업종 평균)
-  const need = Math.round(want / (1 - COST_RATE) / 100000) * 100000;
+  const rate = COST_RATES[s.industry] ?? 0.874;
+  const need = Math.round(want / (1 - rate) / 100000) * 100000;
   const cost = need - want;
   return (
     <Screen progress={44} onBack={back} foot={<button className="btn" onClick={go}>지금 내 월급 계산하기</button>}>
@@ -161,15 +172,27 @@ function ObRevenue({s, go, back}) {
         <div className="card" style={{marginTop:12}}>
           <div className="row"><span className="b14" style={{color:'#616161'}}>희망 월급</span><span className="h4">{man(want)}만원</span></div>
           <div className="rowsep"></div>
-          <div className="row"><span className="b14" style={{color:'#616161'}}>예상 사업비 · 세금</span><span className="h4">{man(cost)}만원</span></div>
+          <div className="row"><span className="b14" style={{color:'#616161'}}>예상 사업비 · 세금</span><span className="h4">{man(cost)}만원<span className="cap12" style={{color:'#9E9E9E',marginLeft:6}}>매출의 {(rate*100).toFixed(1)}%</span></span></div>
         </div>
-        <p className="cap12" style={{marginTop:14,lineHeight:1.6,color:'#9E9E9E'}}>중소벤처기업부 「소상공인실태조사」의 업종별 매출·영업비용·영업이익과 국세청 경비율을 참고해 예상 매출을 계산했어요.</p>
+        <p className="cap12" style={{marginTop:14,lineHeight:1.6,color:'#9E9E9E'}}>{COST_SRC[s.industry] || COST_SRC.retail}<br/>중소벤처기업부 「소상공인실태조사」와 국세청 경비율을 참고한 값이라, 실제 돈 흐름을 연결하면 더 정확해져요.</p>
       </div>
     </Screen>
   );
 }
 
 // ───────── 5. 기능 소개
+function RollingLine({items}) {
+  const [i, setI] = uS(0);
+  uE(()=>{ const t = setInterval(()=>setI(v=>(v+1)%items.length), 2200); return ()=>clearInterval(t); }, []);
+  return (
+    <span style={{display:'inline-block',position:'relative'}}>
+      <style>{`@keyframes rollUp{0%{opacity:0;transform:translateY(8px)}18%,82%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-8px)}}`}</style>
+      <span style={{visibility:'hidden'}}>{items.reduce((a,b)=>a.length>=b.length?a:b)}</span>
+      <span key={i} style={{position:'absolute',inset:0,display:'grid',placeItems:'center',whiteSpace:'nowrap',animation:'rollUp 2.2s ease both'}}>{items[i]}</span>
+    </span>
+  );
+}
+
 function ObFeatures({go, back}) {
   return (
     <Screen onBack={back} foot={<button className="btn" onClick={go}>기능 자세히 보기</button>}>
@@ -177,7 +200,7 @@ function ObFeatures({go, back}) {
         <h1 className="title"><span className="blue">월급술사</span>가 대신 해드립니다</h1>
         <p className="sub">사장님을 위한 돈 관리</p>
         <div style={{display:'grid',placeItems:'center',marginTop:34}}>
-          <div style={{position:'relative',background:'#F0F0F0',color:'#424242',padding:'9px 16px',borderRadius:18,fontSize:14,fontWeight:600}}>세금 공포 이제 그만!<i style={{position:'absolute',left:'50%',marginLeft:-7,bottom:-7,width:14,height:14,background:'#F0F0F0',clipPath:'polygon(50% 100%,0 0,100% 0)',display:'block'}}></i></div>
+          <div style={{position:'relative',background:'#F0F0F0',color:'#424242',padding:'9px 16px',borderRadius:18,fontSize:14,fontWeight:600}}><RollingLine items={['세금 공포 이제 그만!','생활비 걱정 이제 그만!','장부 스트레스 이제 그만!']}/><i style={{position:'absolute',left:'50%',marginLeft:-7,bottom:-7,width:14,height:14,background:'#F0F0F0',clipPath:'polygon(50% 100%,0 0,100% 0)',display:'block'}}></i></div>
           <img src="assets/lupang-features.png" alt="루팡이" style={{width:250,marginTop:14,animation:'float 3.4s ease-in-out infinite'}}/>
         </div>
         <div style={{display:'flex',flexWrap:'wrap',gap:8,justifyContent:'center',marginTop:14}}>
@@ -398,7 +421,6 @@ function CoachLayout({cards, caption, char, charSide, charW, charPos, cta, onCta
       {char && <img src={char} alt="" style={{position:'absolute',zIndex:4,width:charW||190,...(charPos||(charSide==='left'?{left:8,top:300}:{right:2,top:452}))}}/>}
       <div style={{position:'absolute',left:20,right:20,bottom:26,zIndex:5}}>
         <button className="btn" onClick={onCta}>{cta}</button>
-        <button className="textlink" onClick={onSkip}>다음에 할게요</button>
       </div>
       {sheet}
     </div>
