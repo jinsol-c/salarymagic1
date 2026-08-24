@@ -55,13 +55,13 @@ function BankMain({onTab, go}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <AppHeader title="저금통" search={false}/>
+      <AppHeader title="저금통" go={go}/>
       <div className="scroll" style={{marginTop:16}}>
         <div style={{padding:'0 20px 26px',display:'grid',gap:12}}>
           <div className="card" style={{padding:16,position:'relative',overflow:'hidden'}}>
             <div className="h4">저금통 현황</div>
             <div className="d2" style={{marginTop:10}}>12,350,000원</div>
-            <img src="assets/char-6-piggy.png" alt="" style={{position:'absolute',right:12,top:6,width:64,animation:'microFloat 3.6s ease-in-out infinite'}}/>
+            <img src="assets/char-6-piggy.png" alt="" style={{position:'absolute',right:12,top:18,width:64,animation:'microFloat 3.6s ease-in-out infinite'}}/>
             <div className="row" style={{marginTop:24}}>
               <span className="b12" style={{color:'#9E9E9E'}}>저금통 적립률</span>
               <span className="b12" style={{color:'#9E9E9E'}}>목표 금액 15,000,000원</span>

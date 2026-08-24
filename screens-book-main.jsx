@@ -39,169 +39,30 @@ const Kebab = ({onClick}) => (
   </button>
 );
 
-// ── 거래 상세정보 팝업
-function TxnDetailModal({txn, onClose}) {
-  const [pay, setPay] = uS('카드');
-  const [memo, setMemo] = uS('');
-  return (
-    <div style={{position:'absolute',inset:0,zIndex:80,display:'grid',placeItems:'center',padding:'0 24px'}}>
-      <div onClick={onClose} style={{position:'absolute',inset:0,background:'rgba(0,0,0,.4)'}}></div>
-      <div style={{position:'relative',width:'100%',background:'#fff',borderRadius:18,padding:'26px 22px 22px',
-        animation:'txnPop .22s cubic-bezier(.22,.61,.36,1) both'}}>
-        <style>{`@keyframes txnPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}`}</style>
-        <div className="t16">{txn.name}</div>
-        <div className="d3" style={{marginTop:6}}>{won(Math.abs(txn.amount))}원</div>
-        <div style={{marginTop:20}}>
-          <div className="row" style={{padding:'14px 0',borderBottom:'1px solid #EEEEEE'}}>
-            <span className="b14" style={{color:'#9E9E9E'}}>분류</span>
-            <span style={{display:'flex',gap:8}}>
-              {['카드','현금'].map(p=>(
-                <button key={p} onClick={()=>setPay(p)} style={{padding:'7px 22px',borderRadius:999,fontSize:13,fontWeight:600,
-                  border:'1px solid '+(pay===p?BK_BLUE:'#E0E0E0'),color:pay===p?BK_BLUE:'#BDBDBD',background:'#fff'}}>{p}</button>
-              ))}
-            </span>
-          </div>
-          <div className="row" style={{padding:'16px 0',borderBottom:'1px solid #EEEEEE'}}>
-            <span className="b14" style={{color:'#9E9E9E'}}>거래처</span><span className="b14">{txn.vendor || txn.name}</span>
-          </div>
-          <div className="row" style={{padding:'16px 0',borderBottom:'1px solid #EEEEEE'}}>
-            <span className="b14" style={{color:'#9E9E9E'}}>거래시간</span><span className="b14">{txn.time}</span>
-          </div>
-          <div className="row" style={{padding:'16px 0'}}>
-            <span className="b14" style={{color:'#9E9E9E'}}>메모</span>
-            <input value={memo} onChange={e=>setMemo(e.target.value)} placeholder="입력하세요"
-              style={{border:0,outline:'none',textAlign:'right',fontSize:14,background:'transparent',flex:1,marginLeft:16}}/>
-          </div>
-        </div>
-        <div style={{display:'flex',gap:10,marginTop:18}}>
-          <button className="btn ghost sm" style={{flex:1}} onClick={onClose}>취소</button>
-          <button className="btn sm" style={{flex:1}} onClick={onClose}>저장</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-const TagPair = ({on}) => (
-  <span style={{display:'inline-flex',borderRadius:999,overflow:'hidden',marginTop:6}}>
-    {['사업자','개인'].map(t=>(
-      <span key={t} style={{fontSize:11,fontWeight:600,padding:'3px 9px',
-        background:on===t?'#EDF0FF':'#F5F5F5',color:on===t?BK_BLUE:'#BDBDBD',
-        border:'1px solid '+(on===t?'#C3CDFF':'#EEEEEE')}}>{t}</span>
-    ))}
-  </span>
-);
+const POCKET_IN = [
+  ['포스기 카드입금','4월 9일 | 14:20', 820000, 'assets/logo-okpos.png'],
+  ['배민 정산금','4월 9일 | 11:05', 525000, 'assets/logo-baemin.png'],
+  ['매장 현금 입금','4월 8일 | 12:01', 500000, null],
+];
+const POCKET_OUT = [
+  ['식자재 매입','4월 9일 | 09:40', -640000, null],
+  ['배민 수수료','4월 9일 | 11:05', -285000, 'assets/logo-baemin.png'],
+  ['포스기 이용료','4월 8일 | 18:00', -240000, 'assets/logo-shinhan.png'],
+];
 
-// ── 시트 · 기간 설정 (휠)
-function PeriodSheet({onClose}) {
-  const [mode, setMode] = uS('wheel');
-  const years = [2022,2023,2024,2025,2026,2027,2028];
-  const months = [1,2,3,4,5,6,7];
-  const [y, setY] = uS(2026), [m, setM] = uS(4);
-  const wheelStyle = sel => ({fontSize:sel?21:19,fontWeight:sel?700:400,color:sel?'#222':'#D0D0D0',
-    padding:'7px 0',textAlign:'center',transition:'color .15s'});
-  const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  return (
-    <Sheet onClose={onClose}>
-      {[['시작일','2026년 4월 1일'],['종료일','2026년 4월 22일']].map(([l,v])=>(
-        <button key={l} className="row" style={{width:'100%',padding:'10px 0'}} onClick={()=>setMode(mode==='wheel'?'cal':'wheel')}>
-          <span className="t16">{l}</span>
-          <span style={{display:'flex',alignItems:'center',gap:8}}><span className="b14" style={{color:'#616161'}}>{v}</span>
-            <Chevron d="down" s={16} c="#616161"/></span>
-        </button>
-      ))}
-      {mode==='wheel' ? (
-        <div style={{display:'flex',gap:20,marginTop:14,position:'relative',height:210,overflow:'hidden'}}>
-          <div style={{position:'absolute',left:0,right:0,top:'50%',transform:'translateY(-50%)',height:44,background:'#F5F5F5',borderRadius:8}}></div>
-          {[[years,y,setY,'년'],[months,m,setM,'월']].map(([list,val,setter,suf])=>{
-            const idx = list.indexOf(val);
-            return (
-            <div key={suf} style={{flex:1,position:'relative',zIndex:1}}>
-              <div style={{position:'absolute',left:0,right:0,top:'50%',transform:`translateY(${-(idx+0.5)*42}px)`,transition:'transform .2s'}}>
-                {list.map(v=>(
-                  <div key={v} onClick={()=>setter(v)} style={{...wheelStyle(v===val),height:42,lineHeight:'42px',padding:0,cursor:'pointer'}}>{v}{suf}</div>
-                ))}
-              </div>
-            </div>);
-          })}
-        </div>
-      ) : (
-        <div style={{marginTop:16}}>
-          <button style={{display:'flex',alignItems:'center',gap:8}}><span className="h3">{y}년 {m}월</span><Chevron d="down" s={16} c="#222"/></button>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',marginTop:16,rowGap:0}}>
-            {days.map((d,i)=><div key={d} className="cap12" style={{textAlign:'center',paddingBottom:12,color:BK_GRAY}}>{d}</div>)}
-            {Array.from({length:3}).map((_,i)=><div key={'p'+i}></div>)}
-            {Array.from({length:30},(_,i)=>i+1).map(d=>{
-              const inRange = d >= 1 && d <= 22, edge = d === 1 || d === 22;
-              return (
-                <div key={d} style={{height:40,display:'grid',placeItems:'center',background:inRange&&!edge?'#E9EDFF':'transparent'}}>
-                  <span style={{width:38,height:38,borderRadius:edge?'50%':0,display:'grid',placeItems:'center',
-                    background:edge?BK_BLUE:inRange?'#E9EDFF':'transparent',
-                    color:edge?'#fff':inRange?BK_BLUE:'#C7C7C7',fontSize:15,fontWeight:edge?700:500}}>{d}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      <div style={{display:'flex',gap:8,marginTop:24}}>
-        <button className="btn ghost sm" style={{flex:1}} onClick={onClose}>취소</button>
-        <button className="btn sm" style={{flex:1}} onClick={onClose}>적용</button>
-      </div>
-    </Sheet>
-  );
-}
-
-// ── 시트 · 내역 필터
-function FilterSheet({onClose}) {
-  const [cats, setCats] = uS({수입:true, 지출:true, 세무:true});
-  const [scope, setScope] = uS({수입:'사업자', 지출:'사업자', 세무:'사업자'});
-  return (
-    <Sheet onClose={onClose}>
-      <div className="h3">내역 필터</div>
-      {[['기간','월간'],['거래수단','모든 거래 수단']].map(([l,v])=>(
-        <button key={l} className="row" style={{width:'100%',padding:'14px 0'}}>
-          <span className="t16">{l}</span>
-          <span style={{display:'flex',alignItems:'center',gap:8}}><span className="b14" style={{color:'#616161'}}>{v}</span>
-            <Chevron d="right" s={16} c="#616161"/></span>
-        </button>
-      ))}
-      <div className="t16" style={{marginTop:10}}>카테고리</div>
-      <div style={{background:'#F5F5F5',borderRadius:10,padding:'6px 14px',marginTop:12}}>
-        {['수입','지출','세무'].map(c=>(
-          <div className="row" key={c} style={{padding:'14px 0'}}>
-            <button style={{display:'flex',alignItems:'center',gap:10}} onClick={()=>setCats(v=>({...v,[c]:!v[c]}))}>
-              <span className={'cbox'+(cats[c]?' on':'')}></span><span className="t16">{c}</span>
-            </button>
-            <span style={{display:'inline-flex',borderRadius:999,overflow:'hidden'}}>
-              {['사업자','전체'].map(t=>(
-                <button key={t} onClick={()=>setScope(v=>({...v,[c]:t}))} style={{fontSize:12,fontWeight:600,padding:'6px 14px',
-                  background:scope[c]===t?BK_BLUE:'#fff',color:scope[c]===t?'#fff':'#9E9E9E'}}>{t}</button>
-              ))}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div style={{display:'flex',gap:8,marginTop:22}}>
-        <button className="btn ghost sm" style={{flex:1}} onClick={onClose}>취소</button>
-        <button className="btn sm" style={{flex:1}} onClick={onClose}>적용</button>
-      </div>
-    </Sheet>
-  );
-}
-
-// ── 달력
+// ── 날짜별 수입·지출 풀스크린
 function DayModal({day, onClose}) {
   const [txn, setTxn] = uS(null);
   const v = APR_DAYS[day] || [0,0];
   const inc = v[0] > 0 ? [
-    ['포스기 카드입금','14:20 | 카드매출', Math.round(v[0]*0.62),'assets/logo-okpos.png'],
-    ['배민주문','11:05 | 은행이체입금', v[0]-Math.round(v[0]*0.62),'assets/logo-baemin.png'],
+    ['포스기 카드입금','매출 | 14:20', Math.round(v[0]*0.62),'assets/logo-okpos.png'],
+    ['배민 주문','은행이체 | 11:05', v[0]-Math.round(v[0]*0.62),'assets/logo-baemin.png'],
   ] : [];
   const out = v[1] > 0 ? [
-    ['식자재 매입','09:40 | 현대카드', -Math.round(v[1]*0.55), null],
-    ['배민 수수료','11:05 | 카카오뱅크 이체', -Math.round(v[1]*0.25),'assets/logo-baemin.png'],
-    ['포스기 이용료','18:00 | 신한은행 이체', -(v[1]-Math.round(v[1]*0.55)-Math.round(v[1]*0.25)-Math.round(v[1]*0.1)),'assets/logo-shinhan.png'],
-    ['부가세 예수금','18:10 | 자동 이체', -Math.round(v[1]*0.1), null],
+    ['식자재 매입','현대카드 | 09:40', -Math.round(v[1]*0.55), null],
+    ['배민 수수료','카카오뱅크 | 11:05', -Math.round(v[1]*0.25),'assets/logo-baemin.png'],
+    ['포스기 이용료','신한은행 | 18:00', -(v[1]-Math.round(v[1]*0.55)-Math.round(v[1]*0.25)-Math.round(v[1]*0.1)),'assets/logo-shinhan.png'],
+    ['부가세 예수금','자동이체 | 18:10', -Math.round(v[1]*0.1), null],
   ] : [];
   return (
     <div style={{position:'absolute',inset:0,zIndex:70,background:'#fff',display:'flex',flexDirection:'column',
@@ -251,24 +112,15 @@ function DayModal({day, onClose}) {
   );
 }
 
+// ── 월간 달력
 function BookCalendar({onDay}) {
-  const weekday = ['일','월','화','수','목','금','토'];
-  const cells = [null,null,null, ...Array.from({length:30},(_,i)=>i+1), 1,2,3,4];
-  const weeks = Array.from({length:Math.ceil(cells.length/7)},(_,i)=>cells.slice(i*7,i*7+7));
+  const days = ['일','월','화','수','목','금','토'];
+  const cells = Array.from({length:35},(_,i)=>{ const d = i-2; return d>=1 && d<=30 ? d : null; });
+  const weeks = Array.from({length:5},(_,w)=>cells.slice(w*7,w*7+7));
   return (
-    <div className="card" style={{padding:'18px 12px'}}>
-      <div className="row" style={{padding:'0 6px'}}>
-        <span className="h2" style={{color:BK_BLUE}}>2026년 4월</span>
-        <span style={{display:'flex',gap:8}}>
-          {['left','right'].map(d=>(
-            <span key={d} style={{width:26,height:26,borderRadius:'50%',border:'1px solid #E0E0E0',display:'grid',placeItems:'center'}}>
-              <Chevron d={d} s={14} c={BK_BLUE}/></span>
-          ))}
-        </span>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',marginTop:16}}>
-        {weekday.map((d,i)=><div key={d} className="cap12" style={{textAlign:'center',paddingBottom:8,
-          color:i===0?BK_RED:i===6?BK_BLUE:'#8FA0C8'}}>{d}</div>)}
+    <div className="card" style={{padding:'16px 12px 12px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)'}}>
+        {days.map((d,i)=><div key={d} className="cap12" style={{textAlign:'center',paddingBottom:10,color:i===0?BK_RED:i===6?BK_BLUE:BK_GRAY}}>{d}</div>)}
       </div>
       {weeks.map((w,wi)=>{
         const isOut = di => { const gi = wi*7+di; return gi < 3 || gi >= 33; };
@@ -278,21 +130,18 @@ function BookCalendar({onDay}) {
             <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)'}}>
               {w.map((d,di)=>{
                 const outside = d === null || isOut(di);
-                const v = !outside && APR_DAYS[d] ? APR_DAYS[d] : null;
-                const today = d === 18 && !outside;
+                const v = outside ? null : APR_DAYS[d];
                 return (
                   <div key={di} onClick={()=>{ if(!outside && d) onDay(d); }} style={{minHeight:44,textAlign:'center',padding:'2px 1px',cursor:outside?'default':'pointer'}}>
-                    {d && <div style={{fontSize:12,fontWeight:today?700:500,color:today?'#fff':outside?'#D0D0D0':di===0?BK_RED:di===6?BK_BLUE:'#424242',
-                      width:20,height:20,lineHeight:'20px',margin:'0 auto',borderRadius:'50%',background:today?BK_BLUE:'transparent'}}>{d}</div>}
-                    {v && v[0] > 0 && <div style={{fontSize:8.5,color:BK_RED,marginTop:2}}>+{won(v[0])}</div>}
-                    {v && v[1] > 0 && <div style={{fontSize:8.5,color:BK_GRAY}}>−{won(v[1])}</div>}
+                    <div className="cap12" style={{color:outside?'#DADADA':'#616161'}}>{d||''}</div>
+                    {v && v[0] > 0 && <div style={{fontSize:9,fontWeight:600,color:BK_BLUE,marginTop:2}}>{Math.round(v[0]/10000)}만</div>}
+                    {v && v[1] > 0 && <div style={{fontSize:9,fontWeight:600,color:BK_RED}}>{Math.round(v[1]/10000)}만</div>}
                   </div>
                 );
               })}
             </div>
-            <div className="row" style={{borderTop:'1px solid #F0F0F0',padding:'3px 6px 6px'}}>
-              <span style={{fontSize:9,color:'#BDBDBD'}}>소계</span>
-              {sum !== 0 && <span style={{fontSize:9.5,fontWeight:600,color:sum>0?BK_RED:BK_GRAY}}>{signed(sum)}</span>}
+            <div style={{display:'flex',justifyContent:'flex-end',borderBottom:'1px solid #F2F2F2',padding:'0 2px 6px'}}>
+              <span style={{fontSize:10,fontWeight:600,color:sum>=0?BK_BLUE:BK_RED}}>{signed(sum)}</span>
             </div>
           </div>
         );
@@ -301,17 +150,176 @@ function BookCalendar({onDay}) {
   );
 }
 
-// ── 주머니 카드
-const POCKET_IN = [
-  ['포스기 카드입금','4월9일 | 14:20 | 카드매출',820000,'assets/logo-okpos.png'],
-  ['배민주문','4월10일 | 11:05 | 은행이체입금',156000,'assets/logo-baemin.png'],
-  ['포스기 카드입금','4월11일 | 11:25 | 카드매출',156000,'assets/logo-okpos.png'],
-];
-const POCKET_OUT = [
-  ['넷플릭스 결제','4월9일 | 신한은행 이체',-15000,'assets/logo-shinhan.png','사업자'],
-  ['배민 수수료','4월10일 | 카카오뱅크 이체',-50000,'assets/logo-baemin.png','사업자'],
-  ['포스기 이용료','4월11일 | 토스뱅크 이체',-100000,'assets/logo-okpos.png','사업자'],
-];
+// ── 기간 설정 시트
+const wheelStyle = on => ({textAlign:'center',fontSize:on?18:16,fontWeight:on?700:400,color:on?'#222':'#C7C7C7',padding:'9px 0'});
+function PeriodSheet({onClose}) {
+  const [mode, setMode] = uS('월');
+  const [y, setY] = uS(2026);
+  const [m, setM] = uS(4);
+  const years = [2024,2025,2026,2027];
+  const months = [1,2,3,4,5,6,7,8,9,10,11,12];
+  const days = ['일','월','화','수','목','금','토'];
+  return (
+    <Sheet onClose={onClose}>
+      <div className="row">
+        <span className="h3">기간 설정</span>
+        <button onClick={onClose} aria-label="닫기">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#222" strokeWidth="1.8" strokeLinecap="round"/></svg>
+        </button>
+      </div>
+      <div style={{display:'inline-flex',background:'#F5F5F5',borderRadius:8,padding:3,marginTop:16}}>
+        {['월','기간'].map(v=>(
+          <button key={v} onClick={()=>setMode(v)} style={{padding:'7px 20px',borderRadius:6,fontSize:13,fontWeight:mode===v?700:400,
+            background:mode===v?'#fff':'transparent',color:mode===v?'#222':'#BDBDBD'}}>{v}</button>
+        ))}
+      </div>
+      {mode==='월' ? (
+        <div style={{display:'flex',gap:20,marginTop:14,position:'relative',height:210,overflow:'hidden'}}>
+          <div style={{position:'absolute',left:0,right:0,top:'50%',transform:'translateY(-50%)',height:44,background:'#F5F5F5',borderRadius:8}}></div>
+          {[[years,y,setY,'년'],[months,m,setM,'월']].map(([list,val,setter,suf])=>{
+            const idx = list.indexOf(val);
+            return (
+            <div key={suf} style={{flex:1,position:'relative',zIndex:1}}>
+              <div style={{position:'absolute',left:0,right:0,top:'50%',transform:`translateY(${-(idx+0.5)*42}px)`,transition:'transform .2s'}}>
+                {list.map(v=>(
+                  <div key={v} onClick={()=>setter(v)} style={{...wheelStyle(v===val),height:42,lineHeight:'42px',padding:0,cursor:'pointer'}}>{v}{suf}</div>
+                ))}
+              </div>
+            </div>);
+          })}
+        </div>
+      ) : (
+        <div style={{marginTop:16}}>
+          <button style={{display:'flex',alignItems:'center',gap:8}}><span className="h3">{y}년 {m}월</span><Chevron d="down" s={16} c="#222"/></button>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',marginTop:16,rowGap:0}}>
+            {days.map(d=><div key={d} className="cap12" style={{textAlign:'center',paddingBottom:12,color:BK_GRAY}}>{d}</div>)}
+            {Array.from({length:3}).map((_,i)=><div key={'p'+i}></div>)}
+            {Array.from({length:30},(_,i)=>i+1).map(d=>{
+              const inRange = d >= 1 && d <= 22, edge = d === 1 || d === 22;
+              return (
+                <div key={d} style={{height:40,display:'grid',placeItems:'center',background:inRange&&!edge?'#E9EDFF':'transparent'}}>
+                  <span style={{width:38,height:38,borderRadius:edge?'50%':0,display:'grid',placeItems:'center',
+                    background:edge?BK_BLUE:inRange?'#E9EDFF':'transparent',
+                    color:edge?'#fff':inRange?BK_BLUE:'#C7C7C7',fontSize:15,fontWeight:edge?700:500}}>{d}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      <button className="btn" style={{marginTop:22}} onClick={onClose}>적용하기</button>
+    </Sheet>
+  );
+}
+
+// ── 내역 필터 시트
+function FilterSheet({onClose}) {
+  const [sel, setSel] = uS({'거래 구분':'전체','분류':'전체','정렬':'최신순'});
+  const groups = [['거래 구분',['전체','입금','지출']],['분류',['전체','사업','개인']],['정렬',['최신순','과거순','금액 높은순']]];
+  return (
+    <Sheet onClose={onClose}>
+      <div className="row">
+        <span className="h3">내역 필터</span>
+        <button onClick={onClose} aria-label="닫기">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#222" strokeWidth="1.8" strokeLinecap="round"/></svg>
+        </button>
+      </div>
+      <div style={{marginTop:18,display:'grid',gap:22}}>
+        {groups.map(([g,opts])=>(
+          <div key={g}>
+            <div className="l13" style={{color:'#616161'}}>{g}</div>
+            <div style={{display:'flex',gap:8,marginTop:10,flexWrap:'wrap'}}>
+              {opts.map(o=>(
+                <button key={o} onClick={()=>setSel(v=>({...v,[g]:o}))} style={{padding:'8px 16px',borderRadius:999,fontSize:13,fontWeight:600,
+                  border:'1px solid '+(sel[g]===o?BK_BLUE:'#E0E0E0'),color:sel[g]===o?BK_BLUE:'#9E9E9E',background:'#fff'}}>{o}</button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{display:'flex',gap:10,marginTop:26}}>
+        <button className="btn ghost" style={{flex:1}} onClick={onClose}>초기화</button>
+        <button className="btn" style={{flex:1}} onClick={onClose}>적용하기</button>
+      </div>
+    </Sheet>
+  );
+}
+
+// ── 거래내역 상세 팝업 (공통 UI)
+function TxnDetailModal({txn, onClose}) {
+  const [cls, setCls] = uS(txn.cls || '사업');
+  const [memo, setMemo] = uS(txn.memo || '');
+  const [fixed, setFixed] = uS(false);
+  const [del, setDel] = uS(false);
+  const income = txn.amount > 0;
+  const row = (k, v) => (
+    <div className="row" style={{padding:'15px 0',borderBottom:'1px solid #EEEEEE'}}>
+      <span className="b14" style={{color:'#9E9E9E'}}>{k}</span><span className="b14">{v}</span>
+    </div>
+  );
+  return (
+    <div style={{position:'absolute',inset:0,zIndex:80,background:'#fff',display:'flex',flexDirection:'column',
+      animation:'txnIn .24s cubic-bezier(.22,.61,.36,1) both'}}>
+      <style>{`@keyframes txnIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}`}</style>
+      <StatusBar/>
+      <div className="sb-pad"></div>
+      <div className="row" style={{padding:'8px 20px 0',flex:'none'}}>
+        <span className="h3">거래내역 상세</span>
+        <button onClick={onClose} aria-label="닫기">
+          <svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#222" strokeWidth="2" strokeLinecap="round"/></svg>
+        </button>
+      </div>
+      <div className="scroll" style={{padding:'26px 20px 24px'}}>
+        <div className="t16" style={{color:'#616161'}}>{txn.name}</div>
+        <div className="d3" style={{marginTop:8,color:income?BK_BLUE:'#222'}}>{signed(txn.amount)} 원</div>
+        <div style={{marginTop:26}}>
+          <div className="l13" style={{color:'#9E9E9E'}}>메모</div>
+          <input value={memo} onChange={e=>setMemo(e.target.value)} placeholder="메모를 입력해 주세요."
+            style={{marginTop:8,width:'100%',border:0,borderBottom:'1px solid #E0E0E0',outline:'none',fontSize:15,padding:'8px 0',background:'transparent'}}/>
+        </div>
+        <div style={{marginTop:34}}>
+          <div className="h4">금액 상세</div>
+          <div className="row" style={{padding:'15px 0',borderBottom:'1px solid #EEEEEE'}}>
+            <span className="b14" style={{color:'#9E9E9E'}}>분류</span>
+            <span style={{display:'flex',gap:8}}>
+              {['사업','개인'].map(p=>(
+                <button key={p} onClick={()=>setCls(p)} style={{padding:'7px 20px',borderRadius:999,fontSize:13,fontWeight:600,
+                  border:'1px solid '+(cls===p?BK_BLUE:'#E0E0E0'),color:cls===p?BK_BLUE:'#BDBDBD',background:'#fff'}}>{p}</button>
+              ))}
+            </span>
+          </div>
+          {row('거래일', txn.time)}
+          {row('거래구분', income ? '입금' : '지출')}
+          {row('계좌/카드', txn.account || txn.vendor || txn.name)}
+          <button onClick={()=>setFixed(v=>!v)} className="row" style={{width:'100%',padding:'18px 0 0'}}>
+            <span className="b14">고정 지출에 추가</span>
+            <span style={{width:44,height:26,borderRadius:13,background:fixed?BK_BLUE:'#E0E0E0',position:'relative',transition:'background .2s'}}>
+              <i style={{position:'absolute',top:3,left:fixed?21:3,width:20,height:20,borderRadius:'50%',background:'#fff',transition:'left .2s',display:'block'}}></i>
+            </span>
+          </button>
+        </div>
+      </div>
+      <div style={{flex:'none',display:'flex',gap:10,padding:'0 20px 22px'}}>
+        <button className="btn ghost" style={{flex:1}} onClick={()=>setDel(true)}>삭제</button>
+        <button className="btn" style={{flex:1}} onClick={onClose}>저장</button>
+      </div>
+      {del && (
+        <div style={{position:'absolute',inset:0,zIndex:90,display:'grid',placeItems:'center',padding:'0 30px'}}>
+          <div onClick={()=>setDel(false)} style={{position:'absolute',inset:0,background:'rgba(0,0,0,.45)'}}></div>
+          <div style={{position:'relative',width:'100%',background:'#fff',borderRadius:16,padding:'28px 22px 18px',textAlign:'center'}}>
+            <div className="h4">거래내역을 삭제할까요?</div>
+            <p className="b14" style={{margin:'12px 0 0',color:'#616161',lineHeight:1.6}}>삭제된 거래내역은<br/>추가 또는 수정이 불가능 합니다.</p>
+            <div style={{display:'flex',gap:10,marginTop:22}}>
+              <button className="btn ghost sm" style={{flex:1}} onClick={()=>setDel(false)}>취소</button>
+              <button className="btn sm" style={{flex:1}} onClick={onClose}>삭제</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PocketCard({title, total, rows, cta, onCta, tags, onTxn}) {
   return (
     <div className="card" style={{padding:'20px 18px'}}>
@@ -354,14 +362,7 @@ function BookMain({onTab, go}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <div className="row" style={{padding:'8px 20px 0',flex:'none'}}>
-        <span className="h2">장부</span>
-        <span style={{display:'flex',gap:16,alignItems:'center'}}>
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.6" stroke="#222" strokeWidth="1.7"/><path d="M16 16l4 4" stroke="#222" strokeWidth="1.7" strokeLinecap="round"/></svg>
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.4 5.4 1.4 5.4H4.6S6 14 6 10Z" stroke="#222" strokeWidth="1.6" strokeLinejoin="round"/><path d="M10 18.4a2 2 0 0 0 4 0" stroke="#222" strokeWidth="1.6" strokeLinecap="round"/></svg>
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#222" strokeWidth="1.6"/><circle cx="12" cy="10" r="3" stroke="#222" strokeWidth="1.6"/><path d="M5.8 19a7 7 0 0 1 12.4 0" stroke="#222" strokeWidth="1.6"/></svg>
-        </span>
-      </div>
+      <AppHeader title="장부" search go={go}/>
       <div className="row" style={{padding:'14px 20px 6px',flex:'none'}}>
         <button style={circle} aria-label="이전 달"><Chevron s={15} c={BK_BLUE}/></button>
         <button className="h3" onClick={()=>setSheet('period')}>2026년 4월</button>
@@ -476,10 +477,7 @@ function BookTxnList({kind, back}) {
     <div className="screen" style={{background:'#fff'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <div style={{display:'flex',alignItems:'center',gap:10,padding:'8px 20px 0',flex:'none'}}>
-        <button onClick={back} style={{marginLeft:-6}}><Chevron/></button>
-        <span className="h3">{income ? '수입' : '지출'}</span>
-      </div>
+      <AppHeader type="sub" title={income ? '수입' : '지출'} onBack={back}/>
       <div className="row" style={{padding:'14px 20px 6px',flex:'none'}}>
         <span style={{width:30,height:30,borderRadius:'50%',border:'1px solid #E0E0E0',display:'grid',placeItems:'center'}}><Chevron s={15} c={BK_BLUE}/></span>
         <span className="h3">2026년 3월 27일</span>

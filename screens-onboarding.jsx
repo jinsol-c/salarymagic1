@@ -495,7 +495,7 @@ function ObCoach1({go, skip}) {
       sheet={sheet && <Sheet noDim onClose={()=>setSheet(false)}>
         <h2 className="h1"><span className="blue">입출금</span> 계좌 연동하기</h2>
         <p className="sub" style={{marginTop:8}}>연동한 계좌로 수입과 지출을 자동으로 분류해요</p>
-        {[['입금 계좌 선택하기',inAcc,setIn],['지출 계좌 선택하기',outAcc,setOut]].map(([t,val,setter],gi)=>(
+        {[['입금 계좌 선택하기',inAcc,setIn],['지출 계좌·카드 선택하기',outAcc,setOut]].map(([t,val,setter],gi)=>(
           <div className="card" key={gi} style={{marginTop:16}}>
             <div className="h4">{t}</div>
             <div style={{marginTop:14,display:'grid',gap:12}}>

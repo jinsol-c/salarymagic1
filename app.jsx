@@ -10,7 +10,7 @@ const OB_ROUTES = [
 ];
 const APP_ROUTES = [['home','01 메인 홈'],['book','02 장부'],['book_in','02-1 수입 상세내역'],['book_out','02-2 지출 상세내역'],['book_report','02-3 분석 리포트'],['book_detail','02-4 장부 · 카테고리 상세'],
   ['salary_main','03 월급 메인'],['salary_setting','03-1 월급 설정 변경'],['salary_payout','03-2 월급 지급 받기'],['salary_risk','03-3 월급 지급 · RISK'],['salary_history','03-4 월급 수령 이력'],['plan','03-5 요금제'],
-  ['bank','04 저금통 메인'],['bank_txn_emg','04-1 비상금 상자 거래내역'],['bank_txn_tax','04-2 세금 상자 거래내역'],['bank_box','04-2 상자 설정'],
+  ['bank','04 저금통 메인'],['mypage','06 마이페이지'],['bank_txn_emg','04-1 비상금 상자 거래내역'],['bank_txn_tax','04-2 세금 상자 거래내역'],['bank_box','04-2 상자 설정'],
   ['recipe','05 머니 레시핌'],['recipe_loan','05-1 대출'],['recipe_invest','05-2 투자'],['recipe_insure','05-3 보험'],['recipe_card','05-4 카드'],
   ['lock','06 잠금화면 알림']];
 let PLAN_FROM = 'salary_main';
@@ -73,6 +73,7 @@ function App() {
       case 'salary_payout': return <SalaryPayout s={s} back={()=>nav('salary_main',-1)}/>;
       case 'salary_risk': return <SalaryPayout s={s} risk back={()=>nav('salary_main',-1)}/>;
       case 'salary_history': return <SalaryHistory back={()=>nav('salary_main',-1)}/>;
+      case 'mypage': return <MyPage s={s} go={nav} back={()=>nav('home',-1)}/>;
       case 'plan': return <PlanScreen back={()=>nav(PLAN_FROM,-1)}/>;
       case 'bank': return <BankMain onTab={tabNav} go={nav}/>;
       case 'bank_txn': return <BankTxn back={()=>nav('bank',-1)}/>;

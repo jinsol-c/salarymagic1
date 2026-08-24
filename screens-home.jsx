@@ -13,64 +13,80 @@ function BottomNav({tab, onTab}) {
   );
 }
 
-const MENU_SECTIONS = [
-  ['장부', [['book','AI 리포트 · 주간 · 월간 · 연간'],['book_detail','카테고리 상세']]],
-  ['월급', [['salary_main','월급 메인'],['salary_setting','월급 설정 변경'],['salary_payout','월급 지급 받기'],['salary_history','월급 지급 내역']]],
-  ['저금통', [['bank','저금통 메인'],['bank_txn','저금통 거래내역'],['bank_box','상자 설정']]],
-  ['머니 레시피', [['recipe','추천 금융상품'],['recipe_loan','대출'],['recipe_invest','투자'],['recipe_insure','보험'],['recipe_card','카드']]],
-  ['설정', [['plan','요금제']]],
+const MENU_QUICK = [
+  ['알림','noti','M12 4a5.6 5.6 0 0 0-5.6 5.6v3.2L4.8 16h14.4l-1.6-3.2V9.6A5.6 5.6 0 0 0 12 4Z'],
+  ['리포트','book_report','M5 19V6m5 13V9m5 10V4m5 15v-7'],
+  ['마이페이지','mypage','M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8c0-3.4 3.1-5.6 7-5.6s7 2.2 7 5.6'],
+  ['금융','recipe','M4 10 12 5l8 5M6 10v8h12v-8M9 18v-4h6v4'],
 ];
+const MENU_SECTIONS = [
+  ['장부', [['book_in','입금 주머니'],['book_out','지출 주머니'],['book_report','리포트']]],
+  ['월급', [['salary_setting','월급 설정'],['salary_history','월급 이력 보기']]],
+  ['저금통', [['bank_box','저금통 설정'],['bank_txn_tax','세금 관리']]],
+  ['마이페이지', [['mypage','개인 정보 관리'],['mypage','사업장 관리'],['mypage','계좌 관리'],['plan','구독 관리']]],
+];
+
 function AllMenu({open, onClose, go}) {
+  const [noti, setNoti] = uS(false);
+  const pick = r => { if (r === 'noti') { setNoti(true); return; } onClose(); go(r); };
   return (
     <div style={{position:'absolute',inset:0,zIndex:60,pointerEvents:open?'auto':'none'}}>
       <div onClick={onClose} style={{position:'absolute',inset:0,background:'rgba(0,0,0,.78)',opacity:open?1:0,transition:'opacity .28s'}}></div>
-      <div style={{position:'absolute',top:0,right:0,bottom:0,width:'86%',background:'#fff',display:'flex',flexDirection:'column',
+      <div style={{position:'absolute',top:0,right:0,bottom:0,width:'88%',background:'#fff',display:'flex',flexDirection:'column',
         transform:open?'translateX(0)':'translateX(100%)',transition:'transform .3s cubic-bezier(.22,.61,.36,1)',boxShadow:'-8px 0 24px rgba(0,0,0,.12)'}}>
-        <div style={{flex:'none',padding:'56px 20px 0'}}>
-          <div className="row">
-            <span className="h2">전체 카테고리</span>
-            <button onClick={onClose} aria-label="닫기">
-              <svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#222" strokeWidth="2" strokeLinecap="round"/></svg>
-            </button>
-          </div>
+        <div style={{flex:'none',padding:'54px 20px 0',position:'relative',height:44,display:'grid',placeItems:'center'}}>
+          <button onClick={onClose} aria-label="뒤로" style={{position:'absolute',left:14,top:52,display:'flex'}}><Chevron/></button>
+          <span className="h3">전체 메뉴</span>
         </div>
-        <div className="scroll" style={{padding:'24px 20px 32px'}}>
-          <button onClick={()=>{onClose(); go('home');}} style={{width:'100%',textAlign:'left',padding:'12px 0'}}><span className="t16">홈</span></button>
+        <div className="scroll" style={{padding:'26px 22px 36px'}}>
+          <div style={{display:'flex',gap:14}}>
+            {MENU_QUICK.map(([label,route,d])=>(
+              <button key={label} onClick={()=>pick(route)} style={{flex:1,display:'grid',justifyItems:'center',gap:8}}>
+                <span style={{width:48,height:48,borderRadius:'50%',background:'#F0F2F8',display:'grid',placeItems:'center'}}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d={d} stroke="#5F79FF" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </span>
+                <span className="cap12" style={{color:'#616161'}}>{label}</span>
+              </button>
+            ))}
+          </div>
           {MENU_SECTIONS.map(([sec, items])=>(
-            <div key={sec} style={{marginTop:22}}>
-              <div className="cap12" style={{color:'#9E9E9E',letterSpacing:'.02em'}}>{sec}</div>
+            <div key={sec} style={{marginTop:34}}>
+              <div className="h3">{sec}</div>
+              <div style={{height:1,background:'#222',marginTop:12}}></div>
               <div style={{marginTop:6}}>
-                {items.map(([r,label])=>(
-                  <button key={r} onClick={()=>{onClose(); go(r);}} className="row" style={{width:'100%',textAlign:'left',padding:'12px 0'}}>
+                {items.map(([r,label],i)=>(
+                  <button key={label+i} onClick={()=>pick(r)} className="row" style={{width:'100%',textAlign:'left',padding:'13px 0'}}>
                     <span className="t16">{label}</span>
                     <Chevron d="right" c="#BDBDBD" s={18}/>
                   </button>
                 ))}
               </div>
-              <div style={{height:1,background:'#EEEEEE',marginTop:10}}></div>
             </div>
           ))}
         </div>
       </div>
+      <NotiPopup open={noti} onClose={()=>setNoti(false)}/>
     </div>
   );
 }
 
 function HomeScreen({s, onTab, onMenu, go}) {
   const [menu, setMenu] = uS(false);
+  const [noti, setNoti] = uS(false);
   const name = (s.profile.name || '김루팡') + '님';
   return (
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="scroll">
         <div style={{background:'#5F79FF',padding:'44px 0 0',position:'relative'}}>
-          <div className="row" style={{padding:'12px 20px 0',position:'relative',zIndex:2}}>
+          <div className="row" style={{padding:'12px 20px 12px',position:'sticky',top:0,zIndex:4,background:'#5F79FF'}}>
             <span className="h2" style={{color:'#fff'}}>월급술사</span>
-            <button onClick={()=>setMenu(true)} aria-label="메뉴">
-              <svg width="26" height="26" viewBox="0 0 26 26"><path d="M4 8h18M4 13h18M4 18h18" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
-            </button>
+            <span style={{display:'flex',gap:6,alignItems:'center'}}>
+              <button onClick={()=>setNoti(true)} style={{display:'flex',color:'#fff'}}>{HdrIcon.noti}</button>
+              <button onClick={()=>setMenu(true)} style={{display:'flex',color:'#fff'}}>{HdrIcon.menu}</button>
+            </span>
           </div>
-          <img src="assets/lupang-piggy.png" alt="" style={{position:'absolute',right:14,top:46,width:158,pointerEvents:'none',animation:'microFloat 3.6s ease-in-out infinite'}}/>
+          <img src="assets/lupang-piggy.png" alt="" style={{position:'absolute',right:14,top:70,width:158,zIndex:5,pointerEvents:'none',animation:'microFloat 3.6s ease-in-out infinite'}}/>
           <div style={{padding:'44px 20px 0'}}>
             <div className="d1" style={{color:'#fff'}}>{name}</div>
             <div className="b14" style={{color:'#DFE4FF',marginTop:10}}>잠자는 자산을 깨울 시간입니다</div>
@@ -144,6 +160,7 @@ function HomeScreen({s, onTab, onMenu, go}) {
       </div>
       <BottomNav tab="home" onTab={onTab}/>
       <AllMenu open={menu} onClose={()=>setMenu(false)} go={go}/>
+      <NotiPopup open={noti} onClose={()=>setNoti(false)}/>
     </div>
   );
 }
@@ -163,4 +180,4 @@ function Placeholder({label, onTab, tab}) {
   );
 }
 
-Object.assign(window, {HomeScreen, BottomNav, Placeholder});
+Object.assign(window, {HomeScreen, BottomNav, Placeholder, AllMenu});

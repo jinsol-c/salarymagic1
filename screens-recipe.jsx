@@ -39,7 +39,7 @@ function RecipeMain({onBack, go}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <AppHeader title="머니 레시피" onBack={onBack} icons={false}/>
+      <AppHeader type="sub" title="머니 레시피" onBack={onBack}/>
       <div className="scroll" ref={scRef} style={{marginTop:14}}>
         <div style={{padding:'0 20px 30px',display:'grid',gap:14}}>
           <div className="card" style={{padding:'16px 18px',display:'flex',gap:10,alignItems:'center'}}>
@@ -169,7 +169,7 @@ function RecipeDetail({kind, back}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <AppHeader title={d.title} onBack={back} icons={false}/>
+      <AppHeader type="sub" title={d.title} onBack={back}/>
       {d.tabs && (
         <div style={{display:'flex',gap:8,padding:'16px 20px 0',flex:'none'}}>
           {d.tabs.map(t=>(

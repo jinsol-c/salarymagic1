@@ -2,21 +2,6 @@
 
 const BOOK_TABS = ['AI 리포트','주간','월간','연간'];
 
-function BookHeader({title, onBack}) {
-  return (
-    <div className="row" style={{padding:'8px 20px 0',flex:'none'}}>
-      <span style={{display:'flex',alignItems:'center',gap:8}}>
-        {onBack && <button onClick={onBack} style={{marginLeft:-6}}><Chevron/></button>}
-        <span className="h2">{title}</span>
-      </span>
-      <span style={{display:'flex',gap:16}}>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.6" stroke="#222" strokeWidth="1.7"/><path d="M16 16l4 4" stroke="#222" strokeWidth="1.7" strokeLinecap="round"/></svg>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5.5" r="2.5" stroke="#222" strokeWidth="1.6"/><circle cx="6" cy="12" r="2.5" stroke="#222" strokeWidth="1.6"/><circle cx="18" cy="18.5" r="2.5" stroke="#222" strokeWidth="1.6"/><path d="M8.3 10.8 15.7 6.7M8.3 13.2l7.4 4.1" stroke="#222" strokeWidth="1.6"/></svg>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16" stroke="#222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-      </span>
-    </div>
-  );
-}
 function BookTabs({tab, setTab}) {
   return (
     <div style={{display:'flex',gap:8,padding:'18px 20px 0',flex:'none'}}>
@@ -460,7 +445,7 @@ function BookScreen({onTab, onDetail, go, back}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <BookHeader title="분석 리포트" onBack={back}/>
+      <AppHeader type="sub" title="분석 리포트" onBack={back}/>
       <BookTabs tab={tab} setTab={setTab}/>
       <div className="scroll">
         <Period label={per.label} next={per.v < 0} onPrev={()=>per.set(per.v-1)} onNext={()=>per.set(per.v+1)}/>

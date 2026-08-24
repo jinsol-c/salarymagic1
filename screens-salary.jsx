@@ -6,22 +6,6 @@ const SAL_ACCOUNTS = [
   ['국민은행 계좌','9401-***-987654'],
 ];
 
-function AppHeader({title, onBack, icons=true, search=true}) {
-  return (
-    <div className="row" style={{padding:'8px 20px 0',flex:'none'}}>
-      <span style={{display:'flex',alignItems:'center',gap:8}}>
-        {onBack && <button onClick={onBack} style={{marginLeft:-6}}><Chevron/></button>}
-        <span className={onBack?'h3':'h2'}>{title}</span>
-      </span>
-      {icons && <span style={{display:'flex',gap:18}}>
-        {search && <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.6" stroke="#222" strokeWidth="1.7"/><path d="M16 16l4 4" stroke="#222" strokeWidth="1.7" strokeLinecap="round"/></svg>}
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 4a5.6 5.6 0 0 0-5.6 5.6v3.2L4.8 16h14.4l-1.6-3.2V9.6A5.6 5.6 0 0 0 12 4Z" stroke="#222" strokeWidth="1.7" strokeLinejoin="round"/><path d="M10 19h4" stroke="#222" strokeWidth="1.7" strokeLinecap="round"/></svg>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.4" r="3.6" stroke="#222" strokeWidth="1.7"/><path d="M5 19.4c0-3.2 3.1-5.2 7-5.2s7 2 7 5.2" stroke="#222" strokeWidth="1.7" strokeLinecap="round"/></svg>
-      </span>}
-    </div>
-  );
-}
-
 const GradBar = ({pct, danger}) => (
   <div>
     <div style={{height:8,borderRadius:4,background:'#EEEEEE',position:'relative',overflow:'hidden'}}>
@@ -40,7 +24,7 @@ function SalaryMain({s, onTab, go}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <AppHeader title="월급"/>
+      <AppHeader title="월급" search go={go}/>
       <div className="scroll" style={{marginTop:16}}>
         <div style={{padding:'0 20px 24px',display:'grid',gap:12}}>
           <div className="card" style={{padding:16}}>
@@ -116,7 +100,7 @@ function SalarySetting({s, set, back}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <AppHeader title="월급 설정 변경" onBack={back} icons={false}/>
+      <AppHeader type="sub" title="월급 설정 변경" onBack={back}/>
       <div className="scroll" style={{marginTop:16}}>
         <div style={{padding:'0 20px 30px',display:'grid',gap:12}}>
           <div className="card tint" style={{padding:16}}>
@@ -237,7 +221,7 @@ function SalaryPayout({s, back, risk}) {
     <div className="screen" style={{background:'#F5F5F5'}}>
       <StatusBar/>
       <div className="sb-pad"></div>
-      <AppHeader title="월급 지급 받기" onBack={back} icons={false}/>
+      <AppHeader type="sub" title="월급 지급 받기" onBack={back}/>
       <div className="scroll" style={{marginTop:18}}>
         <div style={{padding:'0 20px 30px'}}>
           <div className="row">
