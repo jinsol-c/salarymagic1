@@ -19,6 +19,7 @@ const MENU_QUICK = [
   ['마이페이지','mypage','M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8c0-3.4 3.1-5.6 7-5.6s7 2.2 7 5.6'],
   ['금융','recipe','M4 10 12 5l8 5M6 10v8h12v-8M9 18v-4h6v4'],
 ];
+const MENU_ROOT = {'장부':'book','월급':'salary_main','저금통':'bank','마이페이지':'mypage'};
 const MENU_SECTIONS = [
   ['장부', [['book_in','입금 주머니'],['book_out','지출 주머니'],['book_report','리포트']]],
   ['월급', [['salary_setting','월급 설정'],['salary_history','월급 이력 보기']]],
@@ -51,7 +52,10 @@ function AllMenu({open, onClose, go}) {
           </div>
           {MENU_SECTIONS.map(([sec, items])=>(
             <div key={sec} style={{marginTop:34}}>
-              <div className="h3">{sec}</div>
+              <button className="row h3" style={{width:'100%',textAlign:'left'}} onClick={()=>pick(MENU_ROOT[sec])}>
+                <span>{sec}</span>
+                <Chevron d="right" c="#BDBDBD" s={18}/>
+              </button>
               <div style={{height:1,background:'#222',marginTop:12}}></div>
               <div style={{marginTop:6}}>
                 {items.map(([r,label],i)=>(
