@@ -141,20 +141,20 @@ function ObIndustry({s, set, go, back}) {
 }
 
 // ───────── 4. 예상 필요 매출
-// 매출 대비 사업비·세금 비율
-// 기본 87.4% = 2023년 소상공인실태조사(중기부) 기업체당 연매출 1억 9,900만원 / 영업이익 2,500만원
-// 음식점 89.7% = 국세청 단순경비율(한식 일반음식점, 업종코드 552101)
-const COST_RATES = {food:0.897, cafe:0.874, beauty:0.874, retail:0.874};
+// 매출 대비 사업비·세금 비율 — 사장님 인건비(=희망 월급)를 비용에서 제외한 조정치
+// 기본 74.8% = 소상공인실태조사(중기부) 영업비용률 87.4%에서 대표 인건비 몫을 덜어낸 값
+// 음식점 79.4% = 국세청 단순경비율(한식 일반음식점 552101) 89.7% 동일 방식 조정
+const COST_RATES = {food:0.794, cafe:0.748, beauty:0.748, retail:0.748};
 const COST_SRC = {
-  food:'국세청 단순경비율(한식 일반음식점 552101) 89.7% 적용',
-  cafe:'소상공인실태조사 전체 평균 영업비용률 87.4% 적용',
-  beauty:'소상공인실태조사 전체 평균 영업비용률 87.4% 적용',
-  retail:'소상공인실태조사 전체 평균 영업비용률 87.4% 적용',
+  food:'음식점 참고 예시 · 사업비 · 세금 79.4% 적용',
+  cafe:'업종 참고 예시 · 사업비 · 세금 74.8% 적용',
+  beauty:'업종 참고 예시 · 사업비 · 세금 74.8% 적용',
+  retail:'업종 참고 예시 · 사업비 · 세금 74.8% 적용',
 };
 
 function ObRevenue({s, go, back}) {
   const want = s.want || 3000000;
-  const rate = COST_RATES[s.industry] ?? 0.874;
+  const rate = COST_RATES[s.industry] ?? 0.748;
   const need = Math.round(want / (1 - rate) / 100000) * 100000;
   const cost = need - want;
   return (
@@ -174,7 +174,7 @@ function ObRevenue({s, go, back}) {
           <div className="rowsep"></div>
           <div className="row"><span className="b14" style={{color:'#616161'}}>예상 사업비 · 세금</span><span className="h4">{man(cost)}만원<span className="cap12" style={{color:'#9E9E9E',marginLeft:6}}>매출의 {(rate*100).toFixed(1)}%</span></span></div>
         </div>
-        <p className="cap12" style={{marginTop:14,lineHeight:1.6,color:'#9E9E9E'}}>{COST_SRC[s.industry] || COST_SRC.retail}<br/>중소벤처기업부 「소상공인실태조사」와 국세청 경비율을 참고한 값이라, 실제 돈 흐름을 연결하면 더 정확해져요.</p>
+        <p className="cap12" style={{marginTop:14,lineHeight:1.6,color:'#9E9E9E'}}>{COST_SRC[s.industry] || COST_SRC.retail}<br/>업종 평균을 참고해 만든 예시 값이에요. 실제 돈 흐름을 연결하면 사장님 가게 기준으로 다시 계산해 드려요.</p>
       </div>
     </Screen>
   );
