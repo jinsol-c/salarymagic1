@@ -320,6 +320,18 @@ function TxnDetailModal({txn, onClose}) {
   );
 }
 
+function TagPair({on}) {
+  const act = on === '개인' ? '개인' : '사업자';
+  return (
+    <span style={{display:'flex',gap:6,marginTop:8}}>
+      {['사업자','개인'].map(t=>(
+        <span key={t} style={{padding:'4px 10px',borderRadius:999,fontSize:11,fontWeight:600,
+          border:'1px solid '+(act===t?BK_BLUE:'#E0E0E0'),color:act===t?BK_BLUE:'#BDBDBD'}}>{t}</span>
+      ))}
+    </span>
+  );
+}
+
 function PocketCard({title, total, rows, cta, onCta, tags, onTxn}) {
   return (
     <div className="card" style={{padding:'20px 18px'}}>
